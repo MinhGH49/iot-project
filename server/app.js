@@ -38,6 +38,10 @@ io.on('connection', function (socket) {
             socket.emit('send', msg)
     }
 
+    setInterval(()=>{
+      io.emit('chart', Math.random())
+      console.log('sending data')
+    },200);
     // setInterval(sendTest, 250, i)
 
     
@@ -51,11 +55,11 @@ io.on('connection', function (socket) {
      io.emit("send", msg);
     });
 
-    // const sender = (value) => {
-    //   value = socket.on("message",msg);
-    //   io.emit("text", value)
-    // }
-    // setInterval(sender,1000);
+    const sender = (value) => {
+      value = socket.on("message",msg);
+      io.emit("text", value)
+    }
+
 
     
 
