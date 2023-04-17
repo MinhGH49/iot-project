@@ -20,7 +20,7 @@ var io = require('socket.io')(server, {
 var middleware = require('socketio-wildcard')();
 io.use(middleware);
 
-let i = 0;
+let stop = false;
 
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
         console.log('server addr: '+add);
@@ -31,23 +31,28 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 io.on('connection', function (socket) {
 
     console.log('user connected: ' + socket.id);
+    stop = false;
 
     function sendTest(count) {
       console.log('emit message test to client');
             const msg = 'test' + count
             socket.emit('send', msg)
     }
-
-    setInterval(()=>{
-      io.emit('chart', Math.random())
-      console.log('sending data')
-    },200);
+    if (!stop) {
+      setInterval(()=>{
+        const xyz = `${Math.random()},${Math.random()},${Math.random()}`
+        io.emit('chart', xyz)
+        console.log('sending data', xyz)
+      },250);
+    }
+ 
     // setInterval(sendTest, 250, i)
 
     
 
     socket.on('disconnect', function () {
       console.log('user disconnected');
+      stop= true;
     });
 
     socket.on("message", function (msg) {

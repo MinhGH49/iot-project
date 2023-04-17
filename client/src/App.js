@@ -16,49 +16,43 @@ const socket = socketIO.connect('http://localhost:5000')
 
 
 function App() {
-  const initValue = [0]
+  const initValue = [
+    "0,0,0","0,0,0","0,0,0","0,0,0","0,0,0","0,0,0","0,0,0","0,0,0","0,0,0","0,0,0"
+  ]
   const [value, setValue] = useState(initValue);
 
   const convertData = () => {
-    const converted = value.map((data, index) => ({'key': index, 'x': data}))
-    console.log('converted to ', converted)
+    console.log(value)
+    const converted = value.map((data, index) => {
+      //console.log(data)
+      const splited = data.split(',')
+      return ({'key': index, 'x': splited[0], 'y': splited[1], 'z': splited[2]})
+    })
+    //console.log('converted to ', converted)
+    
     return converted
   }
   //const socketRef = useRef();
   useEffect(() => {
-    socket.on('chart', (val) => {
-
+    
+    socket.on('send', (val) => {
+      
       setValue(prev => {
-        if (prev.length >=  10) {
-          return [...prev.slice(1), val]
-        } else {
-          return [...prev, val]
-        }
-      })
-
-        
-      //console.log(value)
+        prev.shift()
+        return [...prev, val]})
       
     })
-    // socket.on('connect', ()=> {
-    //   console.log('connected to server', socket.id)
-     
-    // })
-    // socket.on("connect_error", () => {
-    //   console.log('connect fail')
-    // });
-    // socket.on("send", (data) => {
-    //   console.log('received msg: ', data)
-    // })
-   
     
   }, [])
   // console.log(socket.on("connect", socket.connected));
+  
   return (
     <div className="App">
       
+      <h1>Hello </h1>
       <LineChart
-      width={500}
+      style={{margin: "40px"}}
+      width={1000}
       height={500}
       data={convertData()}
       margin={{
@@ -69,15 +63,29 @@ function App() {
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="key" />
-      <YAxis/>
+      <XAxis/>
+      <YAxis domain={[0, 'dataMax + 100']}/>
       <Tooltip />
       <Legend />
       <Line
         type="monotone"
         dataKey="x"
         stroke="#8884d8"
-        activeDot={{ r: 8 }}
+        
+        isAnimationActive={false}
+      />
+       <Line
+        type="monotone"
+        dataKey="y"
+        stroke="#8fce00"
+        
+        isAnimationActive={false}
+      />
+       <Line
+        type="monotone"
+        dataKey="z"
+        stroke="#ad1f1f"
+        
         isAnimationActive={false}
       />
      
