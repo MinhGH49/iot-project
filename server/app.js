@@ -25,10 +25,10 @@ var con = mysql.createConnection({
   database: "company",
 });
 
-con.connect(function (err) {
-  if (err) throw err;
-  console.log("Connected!!!");
-});
+// con.connect(function (err) {
+//   if (err) throw err;
+//   console.log("Connected!!!");
+// });
 
 let stop = false;
 

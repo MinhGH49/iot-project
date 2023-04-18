@@ -13,17 +13,17 @@ function Login() {
   const database = [
     {
       username: "admin",
-      password: "admin"
+      password: "admin",
     },
     {
       username: "user2",
-      password: "pass2"
-    }
+      password: "pass2",
+    },
   ];
 
   const errors = {
     uname: "invalid username",
-    pass: "invalid password"
+    pass: "invalid password",
   };
 
   const handleSubmit = (event) => {
@@ -80,10 +80,15 @@ function Login() {
     <div className="app">
       <div className="login-form">
         <div className="title">Sign In</div>
-        {isSubmitted ? <>
-          <div>User is successfully logged in</div>
-          <Navigate replace to="/dashboard" />
-        </> : renderForm}
+
+        {isSubmitted ? (
+          <>
+            <div>User is successfully logged in</div>
+            <Navigate replace to="/dashboard" />
+          </>
+        ) : (
+          renderForm
+        )}
       </div>
     </div>
   );

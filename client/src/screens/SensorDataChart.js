@@ -41,7 +41,7 @@ function SensorDataChart() {
   const [maxRoll, setMaxRoll] = useState(0);
 
   const handleSetValues = () => {
-    console.log('object', { minPitch, maxPitch, minRoll, maxRoll });
+    console.log("object", { minPitch, maxPitch, minRoll, maxRoll });
     socket.emit("set-values", { minPitch, maxPitch, minRoll, maxRoll });
   };
 
@@ -135,13 +135,16 @@ function SensorDataChart() {
                 />
               </LineChart>
             </ResponsiveContainer>
-            <Row className="justify-content-md-center">
-              <Table style={{ width: "200px" }}>
+          </div>
+          <div style={{ width: 600, height: 400 }}>
+            <ResponsiveContainer>
+              <Table style={{ width: "200px", marginLeft: "200px" }}>
                 <thead>
                   <tr>
                     <th>Roll</th>
                     <th>Pitch</th>
                     <th style={{ color: "red" }}>Warning:</th>
+                    <th>Config</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -149,45 +152,53 @@ function SensorDataChart() {
                     <td>{x[0]}</td>
                     <td>{x[1]}</td>
                     <td>{warning}</td>
+                    <td>
+                      <div style={{marginRight: "40px"}}>
+                        <label>Min Pitch:</label>
+                        <input
+                          type="number"
+                          value={minPitch}
+                          onChange={(e) =>
+                            setMinPitch(parseInt(e.target.value))
+                          }
+                        />
+                        <br />
+                        <label>Max Pitch:</label>
+                        <input
+                          type="number"
+                          value={maxPitch}
+                          onChange={(e) =>
+                            setMaxPitch(parseInt(e.target.value))
+                          }
+                        />
+                        <br />
+                        <label>Min Roll:</label>
+                        <input
+                          type="number"
+                          value={minRoll}
+                          onChange={(e) => setMinRoll(parseInt(e.target.value))}
+                        />
+                        <br />
+                        <label>Max Roll:</label>
+                        <input
+                          type="number"
+                          value={maxRoll}
+                          onChange={(e) => setMaxRoll(parseInt(e.target.value))}
+                        />
+                        <br />
+                        <button onClick={handleSetValues}>Set Values</button>
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </Table>
-            </Row>
-            <div>
-              <label>Min Pitch:</label>
-              <input
-                type="number"
-                value={minPitch}
-                onChange={(e) => setMinPitch(parseInt(e.target.value))}
-              />
-              <br />
-              <label>Max Pitch:</label>
-              <input
-                type="number"
-                value={maxPitch}
-                onChange={(e) => setMaxPitch(parseInt(e.target.value))}
-              />
-              <br />
-              <label>Min Roll:</label>
-              <input
-                type="number"
-                value={minRoll}
-                onChange={(e) => setMinRoll(parseInt(e.target.value))}
-              />
-              <br />
-              <label>Max Roll:</label>
-              <input
-                type="number"
-                value={maxRoll}
-                onChange={(e) => setMaxRoll(parseInt(e.target.value))}
-              />
-              <br />
-              <button onClick={handleSetValues}>Set Values</button>
-            </div>
+            </ResponsiveContainer>
           </div>
-          <div>
-            <EmgChart socket={socket}/>
-          </div>
+        </Row>
+        <Row>
+          <ResponsiveContainer>
+            <EmgChart socket={socket} />
+          </ResponsiveContainer>
         </Row>
       </Container>
     </div>
