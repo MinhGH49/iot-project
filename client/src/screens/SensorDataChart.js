@@ -2,6 +2,7 @@
 import "../App.css";
 import socketIO from "socket.io-client";
 import { useState, useEffect, useRef } from "react";
+import { Navigate } from "react-router-dom";
 import {
   LineChart,
   ResponsiveContainer,
@@ -15,6 +16,7 @@ import {
 } from "recharts";
 import { Row, Container, Table } from "react-bootstrap";
 import EmgChart from "../components/EmgChart";
+import HeartBeat from "../components/HeartBeat";
 
 const socket = socketIO.connect("http://192.168.180.59:5000");
 
@@ -39,6 +41,8 @@ function SensorDataChart() {
   const [maxPitch, setMaxPitch] = useState(0);
   const [minRoll, setMinRoll] = useState(0);
   const [maxRoll, setMaxRoll] = useState(0);
+
+  const [authenticated, setauthenticated] = useState(null);
 
   const handleSetValues = () => {
     console.log("object", { minPitch, maxPitch, minRoll, maxRoll });
@@ -70,18 +74,26 @@ function SensorDataChart() {
     socket.on("warning", (val) => {
       setWarning(val);
     });
+
+    const loggedInUser = localStorage.getItem("authenticated");
+    if (loggedInUser) {
+      setauthenticated(loggedInUser);
+    }
   }, []);
   // console.log(socket.on("connect", socket.connected));
+  console.log("authenticated", authenticated);
 
   return (
-    <div className="App">
+    <>
+    {authenticated && authenticated != false ? <>
+      <div className="App">
       <Container className="p-3">
         <Row className="justify-content-md-center">
           <h1 className="header" style={{ textAlign: "center" }}>
             Real time IOT Sensor Data
           </h1>
         </Row>
-        <Row className="">
+        <Row className="" style={{marginLeft: "-200px"}}>
           <div style={{ width: 600, height: 400 }}>
             <ResponsiveContainer>
               <LineChart
@@ -138,7 +150,7 @@ function SensorDataChart() {
           </div>
           <div style={{ width: 600, height: 400 }}>
             <ResponsiveContainer>
-              <Table style={{ width: "200px", marginLeft: "200px" }}>
+              <Table style={{ width: "200px", marginLeft: "400px" }}>
                 <thead>
                   <tr>
                     <th>Roll</th>
@@ -153,7 +165,7 @@ function SensorDataChart() {
                     <td>{x[1]}</td>
                     <td>{warning}</td>
                     <td>
-                      <div style={{marginRight: "40px"}}>
+                      <div style={{ marginRight: "40px" }}>
                         <label>Min Pitch:</label>
                         <input
                           type="number"
@@ -197,11 +209,15 @@ function SensorDataChart() {
         </Row>
         <Row>
           <ResponsiveContainer>
-            <EmgChart socket={socket} />
+            <EmgChart socket={socket}/>
           </ResponsiveContainer>
         </Row>
+        <HeartBeat socket={socket}/>
       </Container>
-    </div>
+    </div></> : <><p className="header">Please login</p>
+
+    </>}
+    </>
   );
 }
 

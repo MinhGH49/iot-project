@@ -8,6 +8,7 @@ function Login() {
   // React States
   const [errorMessages, setErrorMessages] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [authenticated, setauthenticated] = useState(localStorage.getItem(localStorage.getItem("authenticated")|| false));
 
   // User Login info
   const database = [
@@ -34,6 +35,10 @@ function Login() {
 
     // Find user login info
     const userData = database.find((user) => user.username === uname.value);
+    if (userData) {
+      setauthenticated(true)
+      localStorage.setItem("authenticated", true);
+    }
 
     // Compare user info
     if (userData) {

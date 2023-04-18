@@ -1,17 +1,12 @@
 import socketIO from "socket.io-client";
 import { useState, useEffect, useRef } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
+  ResponsiveContainer,
 } from "recharts";
-import HeartBeat from "./HeartBeat";
 
-export default function EmgChart({ socket }) {
+import { Row, Container, Table } from "react-bootstrap";
+
+export default function HeartBeat({ socket }) {
   const initValue = [
     "0",
     "0",
@@ -72,7 +67,7 @@ export default function EmgChart({ socket }) {
   };
 
   useEffect(() => {
-    socket.on("chart_emg", (val) => {
+    socket.on("heart-beat", (val) => {
       setValue((prev) => {
         prev.shift();
         return [...prev, val];
@@ -81,30 +76,25 @@ export default function EmgChart({ socket }) {
   }, []);
 
   return (
-    <div className="emg-chart" style={{ marginLeft: "-200px" }}>
-      <LineChart
-        style={{ marginLeft: "10px", marginTop: "30px" }}
-        width={1200}
-        height={500}
-        data={convertData()}
-        margin={{
-          top: 5,
-
-          left: 20,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis />
-        <YAxis domain={[0, 50000]} />
-        <Tooltip />
-        <Legend />
-        <Line
-          type="monotone"
-          dataKey="emg"
-          stroke="#8884d8"
-          isAnimationActive={false}
-        />
-      </LineChart>
+    <div style={{ width: 100, height: 400 }}>
+      <ResponsiveContainer>
+        <Table style={{ width: "100px", marginLeft: "0px" }}>
+          <thead>
+            <tr>
+              <th>Heartbeat</th>
+              <th>Sp02</th>
+              <th style={{ color: "red" }}>Diagnose:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{}</td>
+              <td>{}</td>
+              <td>{}</td>
+            </tr>
+          </tbody>
+        </Table>
+      </ResponsiveContainer>
     </div>
   );
 }
