@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import { Row, Container, Table } from "react-bootstrap";
 import EmgChart from "../components/EmgChart";
+import HeartBeat from "../components/HeartBeat";
 
 const socket = socketIO.connect("http://localhost:5000");
 
@@ -92,7 +93,7 @@ function SensorDataChart() {
             Real time IOT Sensor Data
           </h1>
         </Row>
-        <Row className="">
+        <Row className="" style={{marginLeft: "-200px"}}>
           <div style={{ width: 600, height: 400 }}>
             <ResponsiveContainer>
               <LineChart
@@ -149,7 +150,7 @@ function SensorDataChart() {
           </div>
           <div style={{ width: 600, height: 400 }}>
             <ResponsiveContainer>
-              <Table style={{ width: "200px", marginLeft: "200px" }}>
+              <Table style={{ width: "200px", marginLeft: "400px" }}>
                 <thead>
                   <tr>
                     <th>Roll</th>
@@ -208,9 +209,10 @@ function SensorDataChart() {
         </Row>
         <Row>
           <ResponsiveContainer>
-            <EmgChart socket={socket} />
+            <EmgChart socket={socket}/>
           </ResponsiveContainer>
         </Row>
+        <HeartBeat socket={socket}/>
       </Container>
     </div></> : <><p className="header">Please login</p>
 
