@@ -2,6 +2,7 @@
 import "../App.css";
 import socketIO from "socket.io-client";
 import { useState, useEffect, useRef } from "react";
+import { Navigate } from "react-router-dom";
 import {
   LineChart,
   ResponsiveContainer,
@@ -40,6 +41,8 @@ function SensorDataChart() {
   const [minRoll, setMinRoll] = useState(0);
   const [maxRoll, setMaxRoll] = useState(0);
 
+  const [authenticated, setauthenticated] = useState(null);
+
   const handleSetValues = () => {
     console.log("object", { minPitch, maxPitch, minRoll, maxRoll });
     socket.emit("set-values", { minPitch, maxPitch, minRoll, maxRoll });
@@ -70,11 +73,19 @@ function SensorDataChart() {
     socket.on("warning", (val) => {
       setWarning(val);
     });
+
+    const loggedInUser = localStorage.getItem("authenticated");
+    if (loggedInUser) {
+      setauthenticated(loggedInUser);
+    }
   }, []);
   // console.log(socket.on("connect", socket.connected));
+  console.log("authenticated", authenticated);
 
   return (
-    <div className="App">
+    <>
+    {authenticated && authenticated != false ? <>
+      <div className="App">
       <Container className="p-3">
         <Row className="justify-content-md-center">
           <h1 className="header" style={{ textAlign: "center" }}>
@@ -153,7 +164,7 @@ function SensorDataChart() {
                     <td>{x[1]}</td>
                     <td>{warning}</td>
                     <td>
-                      <div style={{marginRight: "40px"}}>
+                      <div style={{ marginRight: "40px" }}>
                         <label>Min Pitch:</label>
                         <input
                           type="number"
@@ -201,7 +212,10 @@ function SensorDataChart() {
           </ResponsiveContainer>
         </Row>
       </Container>
-    </div>
+    </div></> : <><p className="header">Please login</p>
+
+    </>}
+    </>
   );
 }
 
