@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import EmgChart from './component/EmgChart';
 
 const socket = socketIO.connect('http://localhost:5000')
 
@@ -26,7 +27,7 @@ function App() {
     const converted = value.map((data, index) => {
       //console.log(data)
       const splited = data.split(',')
-      return ({'key': index, 'x': splited[0], 'y': splited[1], 'z': splited[2]})
+      return ({'key': index, 'roll': splited[0], 'pitch': splited[1]})
     })
     //console.log('converted to ', converted)
     
@@ -64,32 +65,33 @@ function App() {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis/>
-      <YAxis domain={[0, 'dataMax + 100']}/>
+      <YAxis domain={[-300, 'dataMax + 100']}/>
       <Tooltip />
       <Legend />
       <Line
         type="monotone"
-        dataKey="x"
+        dataKey="roll"
         stroke="#8884d8"
         
         isAnimationActive={false}
       />
        <Line
         type="monotone"
-        dataKey="y"
+        dataKey="pitch"
         stroke="#8fce00"
         
         isAnimationActive={false}
       />
-       <Line
+       {/* <Line
         type="monotone"
         dataKey="z"
         stroke="#ad1f1f"
         
         isAnimationActive={false}
-      />
+      /> */}
      
-    </LineChart>
+      </LineChart>
+      <EmgChart socket={socket}/>
     </div>
   );
 }
