@@ -6,7 +6,7 @@ import Login from "./screens/Login";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <Router>
       <Header />
       <main className="py-3">
         <Routes>
@@ -15,7 +15,7 @@ const App = () => {
         </Routes>
       </main>
       <Footer />
-    </BrowserRouter>
+    </Router>
   );
 };
 
