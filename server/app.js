@@ -19,12 +19,12 @@ var middleware = require("socketio-wildcard")();
 io.use(middleware);
 
 //for localhost
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "company",
-});
+// var con = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "company",
+// });
 
 //for cloud
 // var con = mysql.createConnection({
@@ -56,6 +56,10 @@ io.on("connection", function (socket) {
     const msg = "test" + count;
     socket.emit("send", msg);
   }
+
+  socket.on("mpu", (data) => {
+    console.log("mpu data", data)
+  })
   // // if (!stop) {
   // //   setInterval(()=>{
   // //     const xyz = `${Math.random()},${Math.random()},${Math.random()}`
@@ -142,6 +146,11 @@ io.on("connection", function (socket) {
     socket.broadcast.emit("chart_emg", emg);
   });
 
+  socket.on("heart", (emg) => {
+    console.log("heart: ", emg);
+    socket.broadcast.emit("chart_heart", emg);
+  });
+
   // const sender = (value) => {
   //   value = socket.on("message", msg);
   //   io.emit("text", value);
@@ -155,6 +164,7 @@ io.on("connection", function (socket) {
   //     console.log("event name: " + eventName)
 
   // } )
+
 });
 
 app.get("/", function (req, res) {
