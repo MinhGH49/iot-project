@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Link, BrowserRouter } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  BrowserRouter,
+} from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import SensorChart from "./screens/SensorDataChart";
@@ -6,7 +12,7 @@ import Login from "./screens/Login";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <Router>
       <Header />
       <main className="py-3">
         <Routes>
@@ -15,7 +21,7 @@ const App = () => {
         </Routes>
       </main>
       <Footer />
-    </BrowserRouter>
+    </Router>
   );
 };
 
