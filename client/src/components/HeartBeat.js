@@ -55,7 +55,7 @@ export default function HeartBeat({ socket }) {
     "0",
     "0",
   ];
-  const [value, setValue] = useState(initValue);
+  const [value, setValue] = useState(["0"]);
 
   const convertData = () => {
     //console.log(value)
@@ -67,7 +67,8 @@ export default function HeartBeat({ socket }) {
   };
 
   useEffect(() => {
-    socket.on("heart-beat", (val) => {
+    socket.on("chart_heart", (val) => {
+      val = val.split(',')[0]
       setValue((prev) => {
         prev.shift();
         return [...prev, val];
@@ -88,7 +89,7 @@ export default function HeartBeat({ socket }) {
           </thead>
           <tbody>
             <tr>
-              <td>{}</td>
+              <td>{value}</td>
               <td>{}</td>
               <td>{}</td>
             </tr>

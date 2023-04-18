@@ -18,7 +18,7 @@ import { Row, Container, Table } from "react-bootstrap";
 import EmgChart from "../components/EmgChart";
 import HeartBeat from "../components/HeartBeat";
 
-const socket = socketIO.connect("http://192.168.180.59:5000");
+const socket = socketIO.connect("192.168.180.110:5000");
 
 function SensorDataChart() {
   const initValue = [
@@ -42,11 +42,11 @@ function SensorDataChart() {
   const [minRoll, setMinRoll] = useState(0);
   const [maxRoll, setMaxRoll] = useState(0);
 
-  const [authenticated, setauthenticated] = useState(null);
+  const [authenticated, setauthenticated] = useState(true);
 
   const handleSetValues = () => {
-    console.log("object", { minPitch, maxPitch, minRoll, maxRoll });
-    socket.emit("set-values", { minPitch, maxPitch, minRoll, maxRoll });
+    const adjustStr = `${minPitch},${maxPitch},${minRoll},${maxRoll}`
+    socket.emit("set_values", adjustStr);
   };
 
   const convertData = () => {
@@ -54,7 +54,7 @@ function SensorDataChart() {
     const converted = value.map((data, index) => {
       //console.log(data)
       const splited = data.split(",");
-      return { key: index, x: splited[0], y: splited[1], z: splited[2] };
+      return { key: index, x: splited[0], y: splited[1]};
     });
     //console.log('converted to ', converted)
 
@@ -75,10 +75,10 @@ function SensorDataChart() {
       setWarning(val);
     });
 
-    const loggedInUser = localStorage.getItem("authenticated");
-    if (loggedInUser) {
-      setauthenticated(loggedInUser);
-    }
+    // const loggedInUser = localStorage.getItem("authenticated");
+    // if (loggedInUser) {
+    //   setauthenticated(loggedInUser);
+    // }
   }, []);
   // console.log(socket.on("connect", socket.connected));
   console.log("authenticated", authenticated);

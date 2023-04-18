@@ -76,6 +76,10 @@ io.on("connection", function (socket) {
   // // }
 
   // setInterval(sendTest, 250, i)
+  socket.on('set_values', (data) => {
+    console.log('test adjust', data)
+    socket.broadcast.emit('adjust', data)
+  })
 
   socket.on("disconnect", function () {
     console.log("user disconnected");
@@ -93,24 +97,24 @@ io.on("connection", function (socket) {
   socket.on("message", function (msg) {
     //console.log("message: "+ msg);
     io.emit("send", msg);
-    var raw = msg.split(",");
-    dataArray.push(raw);
-    console.log('Array length:', dataArray.length);
-    if ((raw[1] < 0)) {
-      warning = "Unsafe";
-      console.log(warning);
-      console.log('object', msg);
-    } else {
-      warning = "safe";
-    }
-    console.log(warning);
-    if(dataArray.length % 30 == 0) {
-      var sql = `INSERT INTO giatoc (pitch_value, roll_value, warning) VALUES (${raw[1]},${raw[0]}, '${warning}')`;
-      con.query(sql, function (err, results) {
-        if (err) throw err;
-        console.log("Data inserted at:", new Date());
-      });
-    }
+    // var raw = msg.split(",");
+    // dataArray.push(raw);
+    // console.log('Array length:', dataArray.length);
+    // if ((raw[1] < 0)) {
+    //   warning = "Unsafe";
+    //   console.log(warning);
+    //   console.log('object', msg);
+    // } else {
+    //   warning = "safe";
+    // }
+    // console.log(warning);
+    // if(dataArray.length % 30 == 0) {
+    //   var sql = `INSERT INTO giatoc (pitch_value, roll_value, warning) VALUES (${raw[1]},${raw[0]}, '${warning}')`;
+    //   con.query(sql, function (err, results) {
+    //     if (err) throw err;
+    //     console.log("Data inserted at:", new Date());
+    //   });
+    // }
     //console.log(warning);
     // function insertData() {
     //   var value = msg;
@@ -149,12 +153,12 @@ io.on("connection", function (socket) {
   });
 
   socket.on("emg", (emg) => {
-    console.log("emg: ", emg);
+    //console.log("emg: ", emg);
     socket.broadcast.emit("chart_emg", emg);
   });
 
   socket.on("heart", (emg) => {
-    console.log("heart: ", emg);
+    //console.log("heart: ", emg);
     socket.broadcast.emit("chart_heart", emg);
   });
 
@@ -181,25 +185,26 @@ app.get("/", function (req, res) {
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
-  con.query('SELECT * FROM account WHERE username = ?', [username], (error, results) => {
-    if (error) {
-      res.status(500).json({ message: 'Internal server error' });
-    } else if (results.length === 0) {
-      res.status(401).json({ message: 'Username or password is incorrect' });
-    } else {
-      const user = results[0];
-      bcrypt.compare(password, user.password, (error, isMatch) => {
-        if (error) {
-          res.status(500).json({ message: 'Internal server error' });
-        } else if (!isMatch) {
-          res.status(401).json({ message: 'Username or password is incorrect' });
-        } else {
-          const token = jwt.sign({ id: user.id }, 'secret', { expiresIn: '1h' });
-          res.status(200).json({ token });
-        }
-      });
-    }
-  });
+  // con.query('SELECT * FROM account WHERE username = ?', [username], (error, results) => {
+  //   if (error) {
+  //     res.status(500).json({ message: 'Internal server error' });
+  //   } else if (results.length === 0) {
+  //     res.status(401).json({ message: 'Username or password is incorrect' });
+  //   } else {
+  //     const user = results[0];
+  //     bcrypt.compare(password, user.password, (error, isMatch) => {
+  //       if (error) {
+  //         res.status(500).json({ message: 'Internal server error' });
+  //       } else if (!isMatch) {
+  //         res.status(401).json({ message: 'Username or password is incorrect' });
+  //       } else {
+  //         const token = jwt.sign({ id: user.id }, 'secret', { expiresIn: '1h' });
+  //         res.status(200).json({ token });
+  //       }
+  //     });
+  //   }
+  // });
+  
 });
 
 app.post('/register', (req, res) => {
