@@ -18,12 +18,21 @@ var io = require("socket.io")(server, {
 var middleware = require("socketio-wildcard")();
 io.use(middleware);
 
+//for localhost
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: "company",
 });
+
+//for cloud
+// var con = mysql.createConnection({
+//   host: "sql.freedb.tech",
+//   user: "freedb_poman",
+//   password: "c#3cH$W7pXk3QRk",
+//   database: "freedb_drcare_db",
+// });
 
 // con.connect(function (err) {
 //   if (err) throw err;
@@ -35,6 +44,8 @@ let stop = false;
 require("dns").lookup(require("os").hostname(), function (err, add, fam) {
   console.log("server addr: " + add);
 });
+
+var warning = "";
 
 io.on("connection", function (socket) {
   console.log("user connected: " + socket.id);
@@ -66,42 +77,72 @@ io.on("connection", function (socket) {
     return value;
   };
 
+  const dataArray = [];
+
   socket.on("message", function (msg) {
     //console.log("message: "+ msg);
     io.emit("send", msg);
-    function insertData() {
-      var value = msg;
-      let warning = "";
-      var raw = msg.split(",");
-      if (raw[1] < 0) {
-        warning = "Unsafe";
-      } else {
-        warning = "safe";
-      }
-      var sql = `INSERT INTO giatoc (pitch_value, roll_value, warning) VALUES (${raw[1]},${raw[0]}, '${warning}')`;
-      //var sql =  "INSERT INTO giatoc (value, warning) VALUES ('Company Inc', 'Highway 37')";
-      // con.query(sql, function (err, results) {
-      //   if (err) throw err;
-      //   console.log("Data inserted at:", new Date());
-      // });
+    var raw = msg.split(",");
+    dataArray.push(raw);
+    console.log('Array length:', dataArray.length);
+    if ((raw[1] < 0)) {
+      warning = "Unsafe";
+      console.log(warning);
+      console.log('object', msg);
+    } else {
+      warning = "safe";
     }
-    setInterval(insertData, 400);
+    console.log(warning);
+    if(dataArray.length % 30 == 0) {
+      var sql = `INSERT INTO giatoc (pitch_value, roll_value, warning) VALUES (${raw[1]},${raw[0]}, '${warning}')`;
+      con.query(sql, function (err, results) {
+        if (err) throw err;
+        console.log("Data inserted at:", new Date());
+      });
+    }
+    //console.log(warning);
+    // function insertData() {
+    //   var value = msg;
+    //   var raw = msg.split(",");
+    //   //console.log('object', msg);
+    //   if ((raw[1] < -110 && raw[0] < -30) || (raw[1] > 170 && raw[0] > 0)) {
+    //     warning = "Unsafe";
+    //     console.log(warning);
+    //     console.log('object', msg);
+    //   } else {
+    //     warning = "safe";
+    //   }
+    //   if(dataArray.length % 10 == 0) {
+    //     var sql = `INSERT INTO giatoc (pitch_value, roll_value, warning) VALUES (${raw[1]},${raw[0]}, '${warning}')`;
+    //     con.query(sql, function (err, results) {
+    //       if (err) throw err;
+    //       console.log("Data inserted at:", new Date());
+    //     });
+    //   }
+    //   //var sql =  "INSERT INTO giatoc (value, warning) VALUES ('Company Inc', 'Highway 37')";
+    //   // con.query(sql, function (err, results) {
+    //   //   if (err) throw err;
+    //   //   console.log("Data inserted at:", new Date());
+    //   // });
+    // }
+
+    //setInterval(insertData, 1000);
     getValueXY(msg);
   });
 
   socket.on("warning", function (msg) {
-    console.log("message: " + msg);
+    //console.log("message: " + msg);
     getValueWarning(msg);
     io.emit("warning", msg);
     //io.emit("send", msg);
   });
 
-    socket.on('emg', (emg) => {
+  socket.on("emg", (emg) => {
     console.log("emg: ", emg);
-      socket.broadcast.emit('chart_emg', emg)
-    })
+    socket.broadcast.emit("chart_emg", emg);
+  });
 
-    // const sender = (value) => {
+  // const sender = (value) => {
   //   value = socket.on("message", msg);
   //   io.emit("text", value);
   // };
