@@ -14,6 +14,7 @@ import {
   Legend,
 } from "recharts";
 import { Row, Container, Table } from "react-bootstrap";
+import EmgChart from "../components/EmgChart";
 
 const socket = socketIO.connect("http://localhost:5000");
 
@@ -184,41 +185,8 @@ function SensorDataChart() {
               <button onClick={handleSetValues}>Set Values</button>
             </div>
           </div>
-          <div style={{ width: 600, height: 400 }}>
-            <ResponsiveContainer>
-              <LineChart
-                style={{ margin: "20px" }}
-                width={600}
-                height={400}
-                data={convertData()}
-                margin={{
-                  top: 5,
-
-                  left: 10,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis />
-                {/* y: roll, x: pitch */}
-                <YAxis domain={[-300, 350]} />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="x"
-                  stroke="#8884d8"
-                  name="pitch"
-                  isAnimationActive={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="y"
-                  stroke="#8fce00"
-                  name="roll"
-                  isAnimationActive={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+          <div>
+            <EmgChart socket={socket}/>
           </div>
         </Row>
       </Container>

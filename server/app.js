@@ -45,13 +45,13 @@ io.on("connection", function (socket) {
     const msg = "test" + count;
     socket.emit("send", msg);
   }
-  // if (!stop) {
-  //   setInterval(()=>{
-  //     const xyz = `${Math.random()},${Math.random()},${Math.random()}`
-  //     io.emit('chart', xyz)
-  //     console.log('sending data', xyz)
-  //   },250);
-  // }
+  // // if (!stop) {
+  // //   setInterval(()=>{
+  // //     const xyz = `${Math.random()},${Math.random()},${Math.random()}`
+  // //     io.emit('chart', xyz)
+  // //     console.log('sending data', xyz)
+  // //   },250);
+  // // }
 
   // setInterval(sendTest, 250, i)
 
@@ -96,10 +96,15 @@ io.on("connection", function (socket) {
     //io.emit("send", msg);
   });
 
-  const sender = (value) => {
-    value = socket.on("message", msg);
-    io.emit("text", value);
-  };
+    socket.on('emg', (emg) => {
+    console.log("emg: ", emg);
+      socket.broadcast.emit('chart_emg', emg)
+    })
+
+    // const sender = (value) => {
+  //   value = socket.on("message", msg);
+  //   io.emit("text", value);
+  // };
 
   // define a function to insert data into the database
 
