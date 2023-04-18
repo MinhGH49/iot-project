@@ -80,10 +80,10 @@ io.on("connection", function (socket) {
       }
       var sql = `INSERT INTO giatoc (pitch_value, roll_value, warning) VALUES (${raw[1]},${raw[0]}, '${warning}')`;
       //var sql =  "INSERT INTO giatoc (value, warning) VALUES ('Company Inc', 'Highway 37')";
-      con.query(sql, function (err, results) {
-        if (err) throw err;
-        console.log("Data inserted at:", new Date());
-      });
+      // con.query(sql, function (err, results) {
+      //   if (err) throw err;
+      //   console.log("Data inserted at:", new Date());
+      // });
     }
     setInterval(insertData, 400);
     getValueXY(msg);
