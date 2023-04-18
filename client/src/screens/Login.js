@@ -82,7 +82,7 @@ function Login() {
         <div className="title">Sign In</div>
         {isSubmitted ? <>
           <div>User is successfully logged in</div>
-          <Navigate replace to="/" />
+          <Navigate replace to="/dashboard" />
         </> : renderForm}
       </div>
     </div>
