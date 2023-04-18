@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Navigate } from "react-router-dom";
+import axios from 'axios';
 
 import "./style.css";
 
@@ -9,6 +10,9 @@ function Login() {
   const [errorMessages, setErrorMessages] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [authenticated, setauthenticated] = useState(localStorage.getItem(localStorage.getItem("authenticated")|| false));
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   // User Login info
   const database = [
@@ -27,9 +31,17 @@ function Login() {
     pass: "invalid password",
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     //Prevent page reload
     event.preventDefault();
+
+    try {
+      const { data } = await axios.post('/login', { email, password });
+      localStorage.setItem('token', data.token);
+      // Redirect to dashboard or protected route
+    } catch (error) {
+      console.error(error);
+    }
 
     var { uname, pass } = document.forms[0];
 

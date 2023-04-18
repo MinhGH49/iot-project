@@ -6,6 +6,9 @@ var server = require("http").Server(app);
 var mysql = require("mysql");
 const cors = require("cors");
 app.use(cors());
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
 
 var path = require("path");
 var io = require("socket.io")(server, {
@@ -13,6 +16,10 @@ var io = require("socket.io")(server, {
     origin: "http://localhost:3000",
   },
 });
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // var io = require('socket.io')(server)
 
 var middleware = require("socketio-wildcard")();
@@ -169,6 +176,48 @@ io.on("connection", function (socket) {
 
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname + "/index.html"));
+});
+
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  con.query('SELECT * FROM account WHERE username = ?', [username], (error, results) => {
+    if (error) {
+      res.status(500).json({ message: 'Internal server error' });
+    } else if (results.length === 0) {
+      res.status(401).json({ message: 'Username or password is incorrect' });
+    } else {
+      const user = results[0];
+      bcrypt.compare(password, user.password, (error, isMatch) => {
+        if (error) {
+          res.status(500).json({ message: 'Internal server error' });
+        } else if (!isMatch) {
+          res.status(401).json({ message: 'Username or password is incorrect' });
+        } else {
+          const token = jwt.sign({ id: user.id }, 'secret', { expiresIn: '1h' });
+          res.status(200).json({ token });
+        }
+      });
+    }
+  });
+});
+
+app.post('/register', (req, res) => {
+  const { username, password } = req.body;
+
+  bcrypt.hash(password, 10, (error, hash) => {
+    if (error) {
+      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      con.query('INSERT INTO account (username, password) VALUES (?, ?)', [username, hash], (error, result) => {
+        if (error) {
+          res.status(500).json({ message: 'Internal server error' });
+        } else {
+          res.status(201).json({ message: 'User created' });
+        }
+      });
+    }
+  });
 });
 
 server.listen(PORT, () => {
