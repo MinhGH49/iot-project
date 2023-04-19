@@ -18,7 +18,7 @@ import { Row, Container, Table } from "react-bootstrap";
 import EmgChart from "../components/EmgChart";
 import HeartBeat from "../components/HeartBeat";
 
-const socket = socketIO.connect("192.168.180.110:5000");
+const socket = socketIO.connect("192.168.180.59:5000");
 
 function SensorDataChart() {
   const initValue = [
